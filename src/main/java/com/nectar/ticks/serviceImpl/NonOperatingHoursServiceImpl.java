@@ -46,14 +46,20 @@ public class NonOperatingHoursServiceImpl implements NonOperatingHoursService {
 	@Override
 	public ResponseEntity<String> addOperatingHoursOfBuilding(StoreDTO storeDTO) {
 
+		saveBuildingActiveHours(storeDTO);
+		
+		return ResponseEntity.ok("saved to db");
+	}
+
+	private void saveBuildingActiveHours(StoreDTO storeDTO) {
 		Optional<Building> existingBuildingOpt = buildingRepository.findByName(storeDTO.getName());
 		if(existingBuildingOpt.isPresent()) {
 			Building building = existingBuildingOpt.get();
 			
-			if(storeDTO.getProfile() != null) {
+			if(!storeDTO.getProfile().equals("")) {
 				Profile newProfile = createNewProfile(storeDTO.getProfile(), storeDTO.isActive() ,building);
 				
-				for (DayBreaksDTO dayBreakDTO : storeDTO.getDayBreaksDTO()) {
+				for (DayBreaksDTO dayBreakDTO : storeDTO.getDays()) {
 						DayBreaks dayBreak = new DayBreaks();
 						dayBreak.setBaseline(dayBreakDTO.getBaseline());
 						dayBreak.setDayOfWeek(dayBreakDTO.getDay());
@@ -70,8 +76,6 @@ public class NonOperatingHoursServiceImpl implements NonOperatingHoursService {
 		}else {
 			System.out.println("building with Name is not find in DB");
 		}
-		
-		return ResponseEntity.ok("saved to db");
 	}
 
 	private List<Break> createBreaksFromDTO(List<BreakDTO> breaksDTOs) {
@@ -108,7 +112,7 @@ public class NonOperatingHoursServiceImpl implements NonOperatingHoursService {
 		        profile.setName(request.getProfile());
 
 		        List<DayBreaks> updatedDayBreaks = new ArrayList<>();
-		        List<DayBreaksDTO> dayBreaksDtos = request.getDayBreaksDTO();
+		        List<DayBreaksDTO> dayBreaksDtos = request.getDays();
 		        List<DayBreaks> existingDayBreaks = profile.getDayBreaks();
 		        
 		        for (int i = 0; i < dayBreaksDtos.size(); i++) {
@@ -199,7 +203,7 @@ public class NonOperatingHoursServiceImpl implements NonOperatingHoursService {
 			}
 			
 			
-			newStoreDTO.setDayBreaksDTO(dayBreaksDTOs);
+			newStoreDTO.setDays(dayBreaksDTOs);
 			
 			
 		}else {
@@ -224,6 +228,14 @@ public class NonOperatingHoursServiceImpl implements NonOperatingHoursService {
 		
 		profileRepository.deleteById(existingProfile.get().getId());
 		return ResponseEntity.ok("deleted");
+	}
+
+	@Override
+	public ResponseEntity<String> addListOfOperatingHoursOfBuilding(List<StoreDTO> storeDTOList) {
+		for (StoreDTO storeDTO : storeDTOList) {
+			saveBuildingActiveHours(storeDTO);
+		}
+		return ResponseEntity.ok("saved list");
 	}
 
 }

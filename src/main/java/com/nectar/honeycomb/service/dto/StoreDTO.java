@@ -8,7 +8,7 @@ public class StoreDTO {
  	private String name;
     private String profile;
     private boolean active;
-    private List<DayBreaksDTO> dayBreaksDTO;
+    private List<DayBreaksDTO> days;
     
     
 	public Long getProfileId() {
@@ -35,12 +35,13 @@ public class StoreDTO {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	public List<DayBreaksDTO> getDayBreaksDTO() {
-		return dayBreaksDTO;
+	public List<DayBreaksDTO> getDays() {
+		return days;
 	}
-	public void setDayBreaksDTO(List<DayBreaksDTO> dayBreaksDTO) {
-		this.dayBreaksDTO = dayBreaksDTO;
+	public void setDays(List<DayBreaksDTO> days) {
+		this.days = days;
 	}
+	
     
     
 }

@@ -1,5 +1,7 @@
 package com.nectar.ticks.resources.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +23,7 @@ public class NonOperatingHoursController {
 	@Autowired
 	public NonOperatingHoursService nonOperatingHoursService;
 	
-	@PostMapping("/add")
+	@PostMapping("")
 	public ResponseEntity<String> addOperatingHours( @RequestBody StoreDTO storeDTO){
 		return nonOperatingHoursService.addOperatingHoursOfBuilding(storeDTO);
 	}
@@ -41,5 +43,9 @@ public class NonOperatingHoursController {
 		return nonOperatingHoursService.deleteOperatingHoursOfBuilding(request);
 	}
 	
+	@PostMapping("/bulk")
+	public ResponseEntity<String> addOperatingHours( @RequestBody List<StoreDTO> storeDTOList){
+		return nonOperatingHoursService.addListOfOperatingHoursOfBuilding(storeDTOList);
+	}
 	
 }
